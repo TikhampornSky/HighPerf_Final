@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/TikhampornSky/HighPerfFinal/go-1/sorting/mergesort"
+	mergesort "github.com/TikhampornSky/HighPerfFinal/go-1/sorting/mergeSort"
 	"github.com/pkg/profile"
 )
 
@@ -75,6 +75,11 @@ func main() {
 	} else {
 		fmt.Println("No profile to track")
 	}
+
+	// For testing with quicksort
+	// fmt.Println("Quick sort ver...")
+	// basic.Init(*inputFile, *outputFile, int64(*cpu))
+	// basic.Run()
 
 	fmt.Println("Sorting...")
 	mergesort.Init(*inputFile, *outputFile, int64(*cpu))
