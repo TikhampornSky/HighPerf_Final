@@ -1,4 +1,6 @@
 .DS_Store
 
-./go-1/input/rand-10M.txt
-./go-1/go-1
+/go-1/input/rand*.txt
+/go-1/output/rand*.txt
+go-1/profile
+/go-1/go-1

@@ -3,126 +3,80 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/TikhampornSky/HighPerfFinal/go-1/io/useBuffer"
-	"github.com/TikhampornSky/HighPerfFinal/go-1/io/useConcurrent"
-	"github.com/TikhampornSky/HighPerfFinal/go-1/sorting/useMerge"
-	"github.com/TikhampornSky/HighPerfFinal/go-1/sorting/useMergeConcurrent"
 	"runtime"
-	"sort"
 
+	usemergeconcurrent "github.com/TikhampornSky/HighPerfFinal/go-1/sorting/useMergeConcurrent"
 	"github.com/pkg/profile"
 )
 
 func main() {
+	cpu := flag.Int("Your logical cores: ", runtime.NumCPU(), "logical core")
+
 	inputFile := flag.String("input", "", "input file")
 	outputFile := flag.String("output", "", "output file")
-	profileType := flag.String("profile", "", "profile type (cpu, clock, goroutine, mem, mem-allocs, mem-heap, threadcreation, trace)")
-	profilePath := flag.String("profile-path", "", "profile path")
-	technique := flag.String("technique", "", "technique (buffer, concurrent)")
-
-	cpu := flag.Int("cpu", runtime.NumCPU(), "number of cpu to use (logical core)")
+	profilePath := flag.String("profile-path", "", "Path of profile")
+	profileType := flag.String("profile", "", "Type of profile (cpu, goroutine, trace, threadcreation, clock, mem, mem-heap, mem-allocs)")
 
 	flag.Parse()
 
-	if *inputFile == "" {
-		fmt.Println("Input file is required (-input)")
+	if *inputFile == "" || *outputFile == "" {
+		fmt.Println("Please include your Input file (-input) and Output file (-output)")
 		return
 	}
+	fmt.Println("Your logical cores: ", *cpu)
 	fmt.Println("Input file :", *inputFile)
-
-	if *outputFile == "" {
-		fmt.Println("Output file is required (-output)")
-		return
-	}
 	fmt.Println("Output file :", *outputFile)
 
 	if *profileType != "" {
 
 		if *profilePath == "" {
-			fmt.Println("Profile path is required (-profile-path)")
+			fmt.Println("Profile path is required to track information (-profile-path)")
 			return
 		}
 
+		fmt.Println("Your profile: ", *profileType)
 		switch *profileType {
 		case "cpu":
-			fmt.Println("CPU profile")
 			defer profile.Start(
 				profile.CPUProfile,
 				profile.ProfilePath(*profilePath)).Stop()
-		case "clock":
-			fmt.Println("Clock profile")
-			defer profile.Start(
-				profile.ClockProfile,
-				profile.ProfilePath(*profilePath)).Stop()
 		case "goroutine":
-			fmt.Println("Goroutine profile")
 			defer profile.Start(
 				profile.GoroutineProfile,
 				profile.ProfilePath(*profilePath)).Stop()
-		case "mem":
-			fmt.Println("Mem profile")
-			defer profile.Start(
-				profile.MemProfile,
-				profile.ProfilePath(*profilePath)).Stop()
-		case "mem-allocs":
-			fmt.Println("Mem allocs profile")
-			defer profile.Start(
-				profile.MemProfileAllocs,
-				profile.ProfilePath(*profilePath)).Stop()
-		case "mem-heap":
-			fmt.Println("Mem heap profile")
-			defer profile.Start(
-				profile.MemProfileHeap,
-				profile.ProfilePath(*profilePath)).Stop()
-		case "threadcreation":
-			fmt.Println("Thread creation profile")
-			defer profile.Start(
-				profile.ThreadcreationProfile,
-				profile.ProfilePath(*profilePath)).Stop()
 		case "trace":
-			fmt.Println("Trace profile")
 			defer profile.Start(
 				profile.TraceProfile,
 				profile.ProfilePath(*profilePath)).Stop()
+		case "threadcreation":
+			defer profile.Start(
+				profile.ThreadcreationProfile,
+				profile.ProfilePath(*profilePath)).Stop()
+		case "clock":
+			defer profile.Start(
+				profile.ClockProfile,
+				profile.ProfilePath(*profilePath)).Stop()
+		case "mem":
+			defer profile.Start(
+				profile.MemProfile,
+				profile.ProfilePath(*profilePath)).Stop()
+		case "mem-heap":
+			defer profile.Start(
+				profile.MemProfileHeap,
+				profile.ProfilePath(*profilePath)).Stop()
+		case "mem-allocs":
+			defer profile.Start(
+				profile.MemProfileAllocs,
+				profile.ProfilePath(*profilePath)).Stop()
 		default:
-			fmt.Println("Unknown profile type (-profile) : ", *profileType)
+			fmt.Println("Unknow Type: ", *profileType)
 		}
 
 	} else {
-		fmt.Println("No profile (-profile)")
+		fmt.Println("No profile to track")
 	}
 
-	if *technique == "" {
-		fmt.Println("Technique is required (-technique)")
-		return
-	}
-
-	switch *technique {
-	case "buffer":
-		fmt.Println("Buffer technique")
-		usebuffer.Init(*inputFile, *outputFile)
-		data := usebuffer.ReadInput()
-		sort.Slice(data, func(i, j int) bool {
-			return data[i].Value < data[j].Value
-		})
-		usebuffer.WriteOutput(data)
-	case "concurrent":
-		fmt.Printf("Concurrent technique (cpu: %v)\n", *cpu)
-		useconcurrent.Init(*inputFile, *outputFile, int64(*cpu))
-		data := useconcurrent.ReadInput()
-		sort.Slice(data, func(i, j int) bool {
-			return data[i].Value < data[j].Value
-		})
-		useconcurrent.WriteOutput(data)
-	case "merge":
-		fmt.Printf("Merge technique (cpu: %v)\n", *cpu)
-		usemerge.Init(*inputFile, *outputFile, int64(*cpu))
-		data := usemerge.ReadInput()
-		usemerge.WriteOutput(data)
-	case "merge-concurrent":
-		fmt.Printf("Merge concurrent technique (cpu: %v)\n", *cpu)
-		usemergeconcurrent.Init(*inputFile, *outputFile, int64(*cpu))
-		usemergeconcurrent.Run()
-	case "debug":
-	}
+	fmt.Printf("Sorting...")
+	usemergeconcurrent.Init(*inputFile, *outputFile, int64(*cpu))
+	usemergeconcurrent.Run()
 }

@@ -37,4 +37,4 @@ max=int(sys.argv[2])
 
 run(alg,max)
 
-# python3 gen.py rand 10000000 > rand-10M.txt
+# python3 gen.py rand 1000000 > rand-1M.txt
