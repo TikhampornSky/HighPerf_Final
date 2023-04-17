@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"runtime"
 
-	usemergeconcurrent "github.com/TikhampornSky/HighPerfFinal/go-1/sorting/useMergeConcurrent"
+	"github.com/TikhampornSky/HighPerfFinal/go-1/sorting/mergesort"
 	"github.com/pkg/profile"
 )
 
@@ -77,6 +77,6 @@ func main() {
 	}
 
 	fmt.Println("Sorting...")
-	usemergeconcurrent.Init(*inputFile, *outputFile, int64(*cpu))
-	usemergeconcurrent.Run()
+	mergesort.Init(*inputFile, *outputFile, int64(*cpu))
+	mergesort.Run()
 }

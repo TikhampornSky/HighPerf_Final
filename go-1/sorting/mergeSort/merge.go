@@ -1,4 +1,4 @@
-package usemergeconcurrent
+package mergesort
 
 func MergeInBlock(min, max float64, data [][]Pair) []Pair {
 	var result []Pair
@@ -6,8 +6,7 @@ func MergeInBlock(min, max float64, data [][]Pair) []Pair {
 	stopIndex := make([]int, len(data))
 
 	for i, d := range data {
-		startIndex[i] = LowerBoundIndex(d, min)
-		stopIndex[i] = UpperBoundIndex(d, max)
+		startIndex[i], stopIndex[i] = BinarySearch(d, min, max)
 	}
 
 	for {

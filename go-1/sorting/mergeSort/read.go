@@ -1,4 +1,4 @@
-package usemergeconcurrent
+package mergesort
 
 import (
 	"bufio"
@@ -13,8 +13,8 @@ import (
 
 var chunkSize int64
 
-func ReadInput() [][]Pair {
-	file, err := os.Open(initInfo.InputFile)
+func Read() [][]Pair {
+	file, err := os.Open(InitInfo.InputFile)
 	if err != nil {
 		panic(err)
 	}
@@ -24,16 +24,16 @@ func ReadInput() [][]Pair {
 	}
 	file.Close()
 
-	blockData := make([][]Pair, initInfo.CPU)
+	blockData := make([][]Pair, InitInfo.CPU)
 	var wg sync.WaitGroup
-	wg.Add(int(initInfo.CPU))
+	wg.Add(int(InitInfo.CPU))
 
-	chunkSize = fileSize.Size() / int64(initInfo.CPU)
+	chunkSize = fileSize.Size() / int64(InitInfo.CPU)
 	var offset int64 = 0
-	for i := 0; i < int(initInfo.CPU); i++ {
+	for i := 0; i < int(InitInfo.CPU); i++ {
 
 		go func(offset int64, i int) {
-			blockData[i] = read(offset)
+			blockData[i] = readFile(offset)
 			wg.Done()
 		}(offset, i)
 
@@ -45,10 +45,10 @@ func ReadInput() [][]Pair {
 	return blockData
 }
 
-func read(offset int64) []Pair {
+func readFile(offset int64) []Pair {
 	var data []Pair
 
-	file, err := os.Open(initInfo.InputFile)
+	file, err := os.Open(InitInfo.InputFile)
 	if err != nil {
 		panic(err)
 	}
@@ -88,6 +88,6 @@ func read(offset int64) []Pair {
 	sort.Slice(data, func(i, j int) bool {
 		return data[i].Value < data[j].Value
 	})
-	
+
 	return data
 }

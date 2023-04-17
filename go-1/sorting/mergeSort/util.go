@@ -1,4 +1,4 @@
-package usemergeconcurrent
+package mergesort
 
 import "math"
 
@@ -16,28 +16,26 @@ func MinMaxOfAllBlock(data [][]Pair) (float64, float64) {
 	return min, max
 }
 
-func LowerBoundIndex(arr []Pair, target float64) int {
+func BinarySearch(arr []Pair, targetMin, targetMax float64) (int, int) {
 	low, high := 0, len(arr)-1
 	for low <= high {
 		mid := (low + high) / 2
-		if arr[mid].Value < target {
+		if arr[mid].Value < targetMin {
 			low = mid + 1
 		} else {
 			high = mid - 1
 		}
 	}
-	return low
-}
 
-func UpperBoundIndex(arr []Pair, target float64) int {
-	low, high, mid := 0, len(arr)-1, 0
-	for low <= high {
-		mid = (low + high) / 2
-		if arr[mid].Value > target {
-			high = mid - 1
+	lowUp, highUp := 0, len(arr)-1
+	for lowUp <= highUp {
+		mid := (lowUp + highUp) / 2
+		if arr[mid].Value > targetMax {
+			highUp = mid - 1
 		} else {
-			low = mid + 1
+			lowUp = mid + 1
 		}
 	}
-	return low
+
+	return low, lowUp
 }
