@@ -76,7 +76,7 @@ func main() {
 		fmt.Println("No profile to track")
 	}
 
-	fmt.Printf("Sorting...")
+	fmt.Println("Sorting...")
 	usemergeconcurrent.Init(*inputFile, *outputFile, int64(*cpu))
 	usemergeconcurrent.Run()
 }
