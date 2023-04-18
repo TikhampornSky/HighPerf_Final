@@ -36,7 +36,7 @@ func Run() {
 		}(i, start, stop)
 		start = stop + math.SmallestNonzeroFloat64
 		stop = start + numMergeBlock
-	} 
+	}
 
 	wg1.Wait()
 
